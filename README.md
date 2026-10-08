@@ -19,7 +19,7 @@ Keep your Penguin MathQuest repository. This project uses a separate repository.
 2. In GitHub, create a new repository named `excelerate-addmath-arena`.
 3. Click **Add file → Upload files**. Upload the contents INSIDE the extracted `addmath_arena` folder. Do not upload the ZIP itself.
 4. At the repository's top level, confirm these files exist: `app.py`, `bank.py`, `progression.py`, `diagrams.py`, `checker.py`, `curriculum.py`, `storage.py`, `music.py`, `music_player.js`, and `requirements.txt`. Include `README.md`, `verify_project.py`, `requirements-dev.txt` and the `tests` folder too.
-5. Upload `.streamlit/config.toml` as well. Windows may hide this folder; GitHub → Add file → Create new file also lets you create a file with that exact path and paste the supplied contents. This file also enables static audio serving, so it is required for music. Upload the supplied static/study_music.mp3 file too.
+5. Upload `.streamlit/config.toml` as well. Windows may hide this folder; GitHub → Add file → Create new file also lets you create a file with that exact path and paste the supplied contents. Upload the supplied static/study_music.mp3 file too. Audio is embedded directly by the music module; it does not depend on static serving.
 6. Commit directly to `main`.
 7. At https://share.streamlit.io choose **Create app**. Select the NEW repository, `main`, and `app.py` as the main file. Deploy.
 8. For teacher access, open the app's Settings → Secrets and add the top-level line below, substituting a private password:
@@ -99,4 +99,10 @@ Focus mode has been removed. The sidebar player starts at 5% volume, requests au
 
 Browsers may block autoplay with sound. The player then displays a Play prompt; clicking Play or an app control can allow playback. Some mobile browsers control volume at device level. Autoplay cannot be guaranteed without user interaction.
 
-To deploy this update, upload **app.py**, **music.py**, **music_player.js**, **requirements.txt**, **.streamlit/config.toml**, and **static/study_music.mp3** together with the other existing project files. Reboot afterward so Streamlit loads the static-serving configuration. Streamlit 1.65 or later is required by this build. To replace the song later, replace `static/study_music.mp3`, commit and reboot; reload the browser tab to load the new track.
+To deploy this update, upload **app.py**, **music.py**, **music_player.js**, **requirements.txt**, **.streamlit/config.toml**, and **static/study_music.mp3** together with the other existing project files. Reboot afterward and refresh the browser tab to load the corrected player. Streamlit 1.65 or later is required by this build. To replace the song later, replace `static/study_music.mp3`, commit and reboot; reload the browser tab to load the new track.
+
+### Music playback fix
+
+The player now embeds the exact packaged MP3 directly and sends it once per browser session, then retains it in the audio engine. It no longer depends on `/app/static/...` URLs or static-serving configuration. The Play control is excluded from the page-wide gesture-start handler, preventing pointerdown from starting audio immediately before click pauses it. Decoder errors have a separate message from browser autoplay blocking.
+
+For an existing deployment, replace **music.py** and **music_player.js** using this package, keep **static/study_music.mp3** in place, reboot the app and refresh the browser tab.

@@ -18,14 +18,20 @@ globalThis.document={
 };
 function mount(language='English',active=true) {
   const elements=Object.fromEntries(['play','volume','status','heading','volume-label'].map(k=>[k,{}]));
-  const cleanup=player({data:{language,active},parentElement:{querySelector:s=>elements[s.slice(6,-1)]}});
+  const data={language,active,track_id:'test-track'};
+  if (!window.__addmathStudyMusic) data.source='data:audio/mpeg;base64,TEST';
+  const cleanup=player({data,setStateValue:(key,value)=>{assert.equal(key,'loaded');assert.equal(value,'test-track');},parentElement:{querySelector:s=>elements[s.slice(6,-1)]}});
   return {elements,cleanup};
 }
+let requested=false;
+const loading={};
+player({data:{language:'English',active:true,track_id:'test-track'},setStateValue:(key,value)=>{assert.equal(key,'loaded');assert.equal(value,'');requested=true;},parentElement:{querySelector:()=>loading}});
+assert.equal(requested,true);assert.match(loading.textContent,/loading/);assert.equal(count,0);
 const flush=async()=>{await Promise.resolve();await Promise.resolve();};
 let view=mount();await flush();
 const engine=window.__addmathStudyMusic;
 assert.equal(engine.audio.volume,.05);assert.equal(engine.audio.loop,true);assert.equal(engine.audio.autoplay,true);
-assert.equal(engine.audio.src,'https://example.com/app/static/study_music.mp3');
+assert.equal(engine.audio.src,'data:audio/mpeg;base64,TEST');
 assert.match(view.elements.status.textContent,/Tap Play/);
 allowed=true;
 for(const fn of listeners.get('pointerdown'))fn();await flush();
@@ -36,6 +42,8 @@ assert.equal(listeners.get('pointerdown').size,1);assert.match(view.elements.hea
 view.elements.play.onclick();assert.equal(engine.audio.paused,true);assert.equal(engine.userPaused,true);
 view.cleanup();view=mount();await flush();
 for(const fn of listeners.get('pointerdown'))fn();await flush();assert.equal(engine.audio.paused,true);
+for(const fn of listeners.get('pointerdown'))fn({composedPath:()=>[view.elements.play]});
+assert.equal(engine.audio.paused,true);
 view.elements.play.onclick();await flush();assert.equal(engine.audio.paused,false);
 view.elements.volume.value='.02';view.elements.volume.oninput();assert.equal(engine.audio.volume,.02);
 view.cleanup();view=mount('English',false);assert.equal(engine.audio.paused,true);
