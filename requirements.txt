@@ -1,3 +1,4 @@
-streamlit>=1.49,<2
+streamlit>=1.65,<2
 numpy>=1.26,<3
 plotly>=6,<7
+matplotlib>=3.8,<4

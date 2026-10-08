@@ -66,7 +66,7 @@ def test_independent_known_mathematics():
       ('triangles',0):[math.sqrt(3)],('triangles',1):[1],('triangles',2):[4],
       ('combinatorics',0):[10],('combinatorics',1):[20],('combinatorics',2):[60],
       ('series',0):[5],('series',1):[14],('series',2):[4],
-      ('vectors',0):[10],('vectors',1):[2,1],('vectors',2):[2],
+      ('vectors',0):[10],('vectors',1):[2,1],('vectors',2):[7/3],
       ('differentiation',0):[7],('differentiation',1):[1],('differentiation',2):[12],
       ('integration',0):[8],('integration',1):[2],('integration',2):[4],
       ('kinematics',0):[5],('kinematics',1):[4],('kinematics',2):[3],

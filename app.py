@@ -12,14 +12,15 @@ import plotly.graph_objects as go
 import streamlit as st
 from bank import build, latex_number
 from checker import check, numeric
+from diagrams import render as render_diagram, caption as diagram_caption
 from curriculum import TRACKS, LEVELS, PROGRESSION, LEVEL_DESCRIPTIONS, TOPICS, title, topics_for
 from storage import save, records, csv_bytes
+from music import study_music
 
 st.set_page_config(page_title='EXCELerate · AddMath Arena',page_icon='✦',layout='wide',initial_sidebar_state='expanded')
 
 with st.sidebar:
     language=st.selectbox('Language / Bahasa',['Bilingual','English','Bahasa Melayu'],key='language')
-    focus=st.toggle('Focus mode / Mod fokus',key='focus_mode')
 
 
 def tr(en,bm):
@@ -62,12 +63,11 @@ h1,h2,h3,p,label,[data-testid="stCaptionContainer"], [data-testid="stMetricLabel
 .node.current {border:2px solid #bea6fc;color:#fff;}
 @media(max-width:720px) {.hero {padding:24px;}.orb {display:none;}.hero h1 {font-size:44px;letter-spacing:-2px;}}
 </style>''',unsafe_allow_html=True)
-if focus:
-    st.markdown('<style>.stApp{background:#161821}.orb,.sticker{display:none}.hero{background:#20222d} .hero h1{font-size:42px}</style>',unsafe_allow_html=True)
 
 with st.sidebar:
     st.markdown('### ✦ EXCELerate')
     page=st.radio(tr('Open','Buka'),['Arena','Graph Lab','Teacher'],format_func=lambda p: {'Arena':tr('Practice arena','Arena latihan'),'Graph Lab':tr('Graph lab','Makmal graf'),'Teacher':tr('Teacher dashboard','Papan pemuka guru')}[p],key='page')
+    study_music(language,active=page!='Teacher')
     st.caption(tr('Write your working. Build understanding.','Tulis jalan kerja. Bina kefahaman.'))
     run=st.session_state.get('run')
     results=run['results'] if run else []
@@ -90,6 +90,18 @@ with st.sidebar:
 def hero():
     subtitle=tr('Lock in. Learn the move. Level up your maths.','Fokus. Fahami langkah. Tingkatkan kemahiran matematik.')
     st.markdown(f'<div class="hero"><div class="orb"></div><div class="kicker">EXCELERATE LEARNING SPACE · 16–18</div><h1>AddMath<br><span>Arena.</span></h1><p>{escape(subtitle)}</p><span class="sticker">YOUR NEXT LEVEL STARTS HERE ✦</span></div>',unsafe_allow_html=True)
+
+
+@st.cache_data(show_spinner=False,max_entries=128)
+def diagram_png(spec,lang):
+    return render_diagram(spec,lang)
+
+
+def question_diagram(q):
+    spec=q.get('diagram')
+    if spec:
+        st.image(diagram_png(spec,language),width='stretch')
+        st.caption(tr(*diagram_caption(spec)))
 
 
 def worked(q):
@@ -231,7 +243,7 @@ if run['index']==len(run['questions']):
     if weak: st.info(tr('Next practice: ','Latihan seterusnya: ')+', '.join(title(k,language) for k in weak))
     with st.expander(tr('Review every worked solution','Semak setiap penyelesaian')):
         for i,(q,r) in enumerate(zip(run['questions'],run['results']),1):
-            st.markdown(f'### {i}. '+title(q['topic'],language));text(q['en'],q['bm']);st.latex(q['latex']);st.caption(tr('Your answer: ','Jawapan anda: ')+', '.join(r['response']));worked(q);st.divider()
+            st.markdown(f'### {i}. '+title(q['topic'],language));text(q['en'],q['bm']);st.latex(q['latex']);question_diagram(q);st.caption(tr('Your answer: ','Jawapan anda: ')+', '.join(r['response']));worked(q);st.divider()
     c1,c2=st.columns(2)
     missed=[q for q,r in zip(run['questions'],run['results']) if not r['correct']]
     if c1.button(tr('Retry missed questions','Cuba semula soalan salah'),disabled=not missed):
@@ -246,6 +258,7 @@ st.caption(run['track']+' · '+title(q['topic'],language)+' · '+tr(q['level'],{
 st.caption(tr(*LEVEL_DESCRIPTIONS[q['level']]))
 st.markdown(f'### {tr("Challenge","Cabaran")} {run["index"]+1}/{len(run["questions"])}')
 text(q['en'],q['bm']);st.latex(q['latex'])
+question_diagram(q)
 if not answered:
     st.caption(tr('Use numbers only, e.g. 1/2, sqrt(3), 2*pi/3. Use * for multiplication. Functions sin/cos/tan use radians. Exact forms are accepted; round only when requested.','Gunakan nombor sahaja, contohnya 1/2, sqrt(3), 2*pi/3. Gunakan * untuk pendaraban. Fungsi sin/cos/tan menggunakan radian. Bentuk tepat diterima; bundarkan hanya apabila diminta.'))
     shown=int(run['hint'])

@@ -38,3 +38,9 @@ Warm-up has one hint. Level up has two stages of hints; Boss mode has three. Eac
 Multi-part questions use individually labelled inputs, but XP is awarded only when every part is correct on the first valid submission. Full bilingual worked steps are shown after submission. Inputs with a parsing error can be corrected before marking. End-of-session results show accuracy by level and questions that used hints. Retry missed questions keeps their original levels and resets hint counts.
 
 The app checks final numerical answers. It does not grade written reasoning, symbolic proofs, complete graphs or examination method marks. It is original exam-style practice, not an official past-paper or full mock examination.
+
+## Question diagrams / Rajah soalan
+
+Relevant questions include generated mathematical diagrams. Triangle and sector shapes match the numerical givens; an ambiguous sine-rule problem shows both valid triangle configurations. Coordinate diagrams and vector arrows use the generated points. Function, calculus and motion graphs depict the supplied equations; integration limits are shaded. Linear-programming diagrams show the feasible region and, in integer-plan questions, feasible lattice points without marking a winning plan.
+
+Unknown lengths, angles and points are symbolic. The fencing pen is explicitly not to scale; the unit-circle illustration is a general reference angle, not a solution. Compute exact values from the question, rather than measuring the image. Captions follow the selected language and the diagrams remain available in the worked-solution review.

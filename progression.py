@@ -5,6 +5,7 @@ Final numerical parts are checked together; working receives no method marks.
 """
 import math
 from fractions import Fraction as F
+from diagrams import specification
 
 
 def num(x):
@@ -20,13 +21,14 @@ def advanced(topic, level, variant, rng):
     a, b, k = rng.randint(2, 7), rng.randint(1, 6), rng.randint(2, 6)
     t = rng.randint(2, 6)
 
-    def q(en, bm, expr, answers, labels, steps, hints, tolerance=1e-7, unordered=False):
+    def q(en, bm, expr, answers, labels, steps, hints, tolerance=1e-7, unordered=False, context=None):
         values = answers if isinstance(answers, list) else [answers]
         return dict(topic=topic, level=level, variant=variant % 3, en=en, bm=bm,
                     latex=expr, answers=[float(z) for z in values],
                     answer_latex=[num(z) for z in values], labels=labels,
                     steps=steps, hints=hints, tolerance=tolerance, unordered=unordered,
-                    demand='exam-style' if boss else 'linked steps')
+                    demand='exam-style' if boss else 'linked steps',
+                    diagram=specification(topic,level,variant,context))
 
     if topic == 'functions':
         if not boss:
@@ -39,7 +41,7 @@ def advanced(topic, level, variant, rng):
                       ('Isolate the square and choose the positive root.','Asingkan kuasa dua dan pilih punca positif.',rf'x^2={t*t}\Rightarrow x={t}'),
                       ('Evaluate g.','Nilai g.',rf'g({t})={t*t+k}')],
                      [('Apply g first, then f.','Gunakan g dahulu, kemudian f.'),
-                      ('Undo the addition and multiplication before taking a square root.','Songsangkan penambahan dan pendaraban sebelum mengambil punca kuasa dua.')])
+                      ('Undo the addition and multiplication before taking a square root.','Songsangkan penambahan dan pendaraban sebelum mengambil punca kuasa dua.')], context=locals())
         return q('f uses its full increasing branch x ≥ h, so its inverse exists. Find h, then solve f⁻¹(g(x)) = r for x. Finally find f(r).',
                  'f menggunakan cabang menaik penuh x ≥ h supaya fungsi songsangnya wujud. Cari h, kemudian selesaikan f⁻¹(g(x)) = r bagi x. Akhir sekali cari f(r).',
                  rf'f(x)=(x-{k})^2+{b},\ g(x)={a}x+{b},\ r={k+t}',
@@ -49,7 +51,7 @@ def advanced(topic, level, variant, rng):
                   ('Solve the linear equation.','Selesaikan persamaan linear.',rf'{a}x+{b}={t*t+b}\Rightarrow x={num(F(t*t,a))}')],
                  [('The domain begins at the turning point.','Domain bermula pada titik pusingan.'),
                   ('f⁻¹(g(x)) = r implies g(x) = f(r).','f⁻¹(g(x)) = r bermaksud g(x) = f(r).'),
-                  ('Use the positive square-root branch for the inverse.','Gunakan cabang punca kuasa dua positif untuk fungsi songsang.')])
+                  ('Use the positive square-root branch for the inverse.','Gunakan cabang punca kuasa dua positif untuk fungsi songsang.')], context=locals())
 
     if topic == 'quadratics':
         if not boss:
@@ -60,7 +62,7 @@ def advanced(topic, level, variant, rng):
                      [('Complete the square.','Lengkapkan kuasa dua.',rf'y={a}(x-{b})^2-{a*k*k}'),
                       ('Read the vertex and solve y = 0.','Baca titik pusingan dan selesaikan y = 0.',rf'({b},-{a*k*k}),\quad x={b}\pm{k}')],
                      [('Complete the square before finding the roots.','Lengkapkan kuasa dua sebelum mencari punca.'),
-                      ('Rewrite using (x − b)²; the constant determines the minimum.','Tulis semula menggunakan (x − b)²; pemalar menentukan minimum.')])
+                      ('Rewrite using (x − b)²; the constant determines the minimum.','Tulis semula menggunakan (x − b)²; pemalar menentukan minimum.')], context=locals())
         a = rng.randint(2, 50)
         length = 4*a
         return q(f'A farmer has {length} m of fencing for three sides of a rectangular pen beside a straight wall. Let x be each perpendicular side. Find the optimal x, the other side, and the maximum area.',
@@ -71,7 +73,7 @@ def advanced(topic, level, variant, rng):
                   ('Use the maximum of the quadratic.','Gunakan maksimum fungsi kuadratik.',rf'x={a},\ y={2*a},\ A_{{\max}}={2*a*a}')],
                  [('Express the area using just one variable.','Ungkapkan luas menggunakan satu pemboleh ubah sahaja.'),
                   ('The fencing equation gives y = total − 2x.','Persamaan pagar memberikan y = jumlah − 2x.'),
-                  ('Complete the square or use the vertex formula; check both lengths are positive.','Lengkapkan kuasa dua atau gunakan rumus titik pusingan; semak kedua-dua panjang positif.')])
+                  ('Complete the square or use the vertex formula; check both lengths are positive.','Lengkapkan kuasa dua atau gunakan rumus titik pusingan; semak kedua-dua panjang positif.')], context=locals())
 
     if topic == 'polynomials':
         r, s, u = b+1, -k, t+k
@@ -84,7 +86,7 @@ def advanced(topic, level, variant, rng):
                      [('Divide by the known factor.','Bahagi dengan faktor diketahui.',rf'P(x)=(x-{r})[x^2-({s+u})x+({s*u})]'),
                       ('Factorise the quadratic.','Faktorkan kuadratik.',rf'P(x)=(x-{r})(x-({s}))(x-{u})')],
                      [('Use polynomial division to reduce the cubic to a quadratic.','Gunakan pembahagian polinomial untuk menurunkan kubik kepada kuadratik.'),
-                      ('The other two roots come from the quotient, not the known linear factor.','Dua punca lain datang daripada hasil bahagi, bukan faktor linear diketahui.')])
+                      ('The other two roots come from the quotient, not the known linear factor.','Dua punca lain datang daripada hasil bahagi, bukan faktor linear diketahui.')], context=locals())
         # Reconstruct two coefficients from independent remainders, then factor.
         p=-total; z=pairs; rem=1+p+z+constant
         return q(f'P(x) has factor x − {r}, and its remainder on division by x − 1 is {rem}. Find p and q, then its smallest and largest roots.',
@@ -96,7 +98,7 @@ def advanced(topic, level, variant, rng):
                   ('Divide and factorise.','Bahagi dan faktorkan.',rf'P(x)=(x-{r})(x-({s}))(x-{u})')],
                  [('Convert both conditions into equations in p and q.','Tukarkan kedua-dua syarat kepada persamaan dalam p dan q.'),
                   ('A factor gives P(r) = 0; the stated remainder gives P(1).','Faktor memberikan P(r) = 0; baki diberi memberikan P(1).'),
-                  ('After finding p and q, divide by the known factor and solve the quotient.','Selepas mencari p dan q, bahagi dengan faktor diketahui dan selesaikan hasil bahagi.')])
+                  ('After finding p and q, divide by the known factor and solve the quotient.','Selepas mencari p dan q, bahagi dengan faktor diketahui dan selesaikan hasil bahagi.')], context=locals())
 
     if topic == 'equations':
         if not boss:
@@ -109,7 +111,7 @@ def advanced(topic, level, variant, rng):
                      [('Substitute u = x².','Gantikan u = x².',rf'(u-{k*k})(u-{t*t})=0'),
                       ('Take both signs of each square root.','Ambil kedua-dua tanda bagi setiap punca kuasa dua.',rf'x=\pm{k},\ \pm{t}')],
                      [('Treat the equation as a quadratic in x².','Anggap persamaan sebagai kuadratik dalam x².'),
-                      ('Each positive value of x² produces a positive and a negative root.','Setiap nilai positif x² menghasilkan punca positif dan negatif.')])
+                      ('Each positive value of x² produces a positive and a negative root.','Setiap nilai positif x² menghasilkan punca positif dan negatif.')], context=locals())
         left=b; right=b+k
         return q('The rational inequality has two solution intervals. Enter the three finite boundaries in ascending order. Also enter the boundary excluded because the expression is undefined. The displayed interval pattern specifies open/closed endpoints.',
                  'Ketaksamaan nisbah mempunyai dua selang penyelesaian. Masukkan tiga sempadan terhingga dalam turutan menaik. Masukkan juga sempadan yang dikecualikan kerana ungkapan tidak ditakrifkan. Corak selang diberi menentukan hujung terbuka/tertutup.',
@@ -120,7 +122,7 @@ def advanced(topic, level, variant, rng):
                   ('Include numerator zeros only.','Masukkan sifar pembilang sahaja.',rf'x\in(-{a},{left}]\cup[{right},\infty)')],
                  [('Create a sign table using numerator and denominator zeros.','Bina jadual tanda menggunakan sifar pembilang dan penyebut.'),
                   ('The denominator zero is never part of the solution.','Sifar penyebut tidak pernah termasuk dalam penyelesaian.'),
-                  ('Test one value in each of the four intervals; include numerator zeros for ≥.','Uji satu nilai dalam setiap empat selang; masukkan sifar pembilang bagi ≥.')])
+                  ('Test one value in each of the four intervals; include numerator zeros for ≥.','Uji satu nilai dalam setiap empat selang; masukkan sifar pembilang bagi ≥.')], context=locals())
 
     if topic == 'simultaneous':
         if not boss:
@@ -130,7 +132,7 @@ def advanced(topic, level, variant, rng):
                      [('Substitute y = total − x.','Gantikan y = jumlah − x.',rf'x^2-{total}x+{product}=0'),
                       ('Solve the quadratic and use x ≥ y.','Selesaikan kuadratik dan gunakan x ≥ y.',rf'(x-{a})(x-{b})=0')],
                      [('Eliminate y to form a quadratic.','Hapuskan y untuk membentuk kuadratik.'),
-                      ('The same two roots are possible for x and y; use the ordering restriction.','Dua punca yang sama mungkin bagi x dan y; gunakan sekatan turutan.')])
+                      ('The same two roots are possible for x and y; use the ordering restriction.','Dua punca yang sama mungkin bagi x dan y; gunakan sekatan turutan.')], context=locals())
         u=b+k; v=u+a
         # line y=kx+b; parabola y=x²+(k-u-v)x+uv+b
         c=k-u-v; const=u*v+b
@@ -144,7 +146,7 @@ def advanced(topic, level, variant, rng):
                   ('Use the distance formula.','Gunakan rumus jarak.',rf'd=\sqrt{{({v-u})^2+({k*(v-u)})^2}}')],
                  [('Eliminate y by equating the line and curve.','Hapuskan y dengan menyamakan garis dan lengkung.'),
                   ('Solve the resulting quadratic, then substitute both x values into the line.','Selesaikan kuadratik terhasil, kemudian gantikan kedua-dua nilai x ke dalam garis.'),
-                  ('Distance uses both coordinate differences, not just the difference in x.','Jarak menggunakan kedua-dua beza koordinat, bukan beza x sahaja.')], tolerance=.0005)
+                  ('Distance uses both coordinate differences, not just the difference in x.','Jarak menggunakan kedua-dua beza koordinat, bukan beza x sahaja.')], tolerance=.0005, context=locals())
 
     if topic == 'logarithms':
         if not boss:
@@ -155,7 +157,7 @@ def advanced(topic, level, variant, rng):
                      [('Combine the logarithms.','Gabungkan logaritma.',rf'x^2-{b*b}={root*root-b*b}'),
                       ('Reject the root outside the domain.','Tolak punca di luar domain.',rf'x=\pm{root},\quad x>{b}\Rightarrow x={root}')],
                      [('Use the product law, then check both log arguments are positive.','Gunakan hukum hasil darab, kemudian semak kedua-dua argumen log positif.'),
-                      ('The quadratic gives two candidates, but only one satisfies x > b.','Kuadratik memberikan dua calon, tetapi hanya satu memenuhi x > b.')])
+                      ('The quadratic gives two candidates, but only one satisfies x > b.','Kuadratik memberikan dua calon, tetapi hanya satu memenuhi x > b.')], context=locals())
         initial=100*a; hours=b; doubled=initial*2
         return q(f'A culture follows N(t)=Ae^(kt). It has {initial} cells at t=0 and {doubled} cells after {hours} hours. Find k (hour⁻¹), the time to reach three times the initial population, and N({2*hours}). Round k and the time to 3 decimal places.',
                  f'Kultur mengikut N(t)=Ae^(kt). Terdapat {initial} sel pada t=0 dan {doubled} sel selepas {hours} jam. Cari k (jam⁻¹), masa untuk mencapai tiga kali populasi awal dan N({2*hours}). Bundarkan k dan masa kepada 3 tempat perpuluhan.',
@@ -166,7 +168,7 @@ def advanced(topic, level, variant, rng):
                   ('Evaluate after two doubling intervals.','Nilai selepas dua selang penggandaan.',rf'N({2*hours})={initial}\times2^2={initial*4}')],
                  [('Determine A first, then use a population ratio to find k.','Tentukan A dahulu, kemudian gunakan nisbah populasi untuk mencari k.'),
                   ('Divide N(t) by N(0) before taking logarithms.','Bahagi N(t) dengan N(0) sebelum mengambil logaritma.'),
-                  ('For tripling use e^(kt) = 3; keep k unrounded in later calculations.','Untuk tiga kali ganda gunakan e^(kt) = 3; kekalkan k tanpa pembundaran dalam pengiraan seterusnya.')],tolerance=.0005)
+                  ('For tripling use e^(kt) = 3; keep k unrounded in later calculations.','Untuk tiga kali ganda gunakan e^(kt) = 3; kekalkan k tanpa pembundaran dalam pengiraan seterusnya.')],tolerance=.0005, context=locals())
 
     if topic == 'indices':
         if not boss:
@@ -178,7 +180,7 @@ def advanced(topic, level, variant, rng):
                      [('Let u = aˣ and solve the quadratic.','Ambil u = aˣ dan selesaikan kuadratik.',rf'(u-{a**b})(u-{a**k})=0'),
                       ('Apply the restriction and simplify the surd.','Gunakan sekatan dan permudahkan surd.',rf'x={max(b,k)},\quad E={a}+{max(b,k)}')],
                      [('Substitute aˣ as one variable.','Gantikan aˣ sebagai satu pemboleh ubah.'),
-                      ('After solving for aˣ, take logarithms or compare powers; simplify √(2a²).','Selepas menyelesaikan aˣ, ambil logaritma atau bandingkan kuasa; permudahkan √(2a²).')])
+                      ('After solving for aˣ, take logarithms or compare powers; simplify √(2a²).','Selepas menyelesaikan aˣ, ambil logaritma atau bandingkan kuasa; permudahkan √(2a²).')], context=locals())
         # Rationalised surds give a quadratic in positive u = 2ˣ.
         lower=b; upper=b+k
         return q('Solve for both real x values, smaller first. Then rationalise R and give its coefficient of √2.',
@@ -190,7 +192,7 @@ def advanced(topic, level, variant, rng):
                   ('Rationalise the denominator.','Rasionalkan penyebut.',rf'R=\dfrac{{{a}\sqrt2}}{{{2*k}}}')],
                  [('Recognise that 4ˣ = (2ˣ)².','Kenal pasti bahawa 4ˣ = (2ˣ)².'),
                   ('The quadratic gives values of 2ˣ, not values of x.','Kuadratik memberikan nilai 2ˣ, bukan nilai x.'),
-                  ('Simplify the denominator to k√2, then multiply numerator and denominator by √2.','Permudahkan penyebut kepada k√2, kemudian darab pembilang dan penyebut dengan √2.')])
+                  ('Simplify the denominator to k√2, then multiply numerator and denominator by √2.','Permudahkan penyebut kepada k√2, kemudian darab pembilang dan penyebut dengan √2.')], context=locals())
 
     if topic in ('straight_lines','coordinates'):
         if not boss:
@@ -201,7 +203,7 @@ def advanced(topic, level, variant, rng):
                      [('Find midpoint and gradient of AB.','Cari titik tengah dan kecerunan AB.',rf'M=({h},{cy}),\quad m_{{AB}}=1'),
                       ('Use the perpendicular gradient through M.','Gunakan kecerunan berserenjang melalui M.',rf'y-{cy}=-(x-{h})\Rightarrow y=-x+{h+cy}')],
                      [('A perpendicular bisector passes through the midpoint.','Pembahagi dua sama serenjang melalui titik tengah.'),
-                      ('Use the negative reciprocal gradient and substitute the midpoint to find c.','Gunakan kecerunan salingan negatif dan gantikan titik tengah untuk mencari c.')])
+                      ('Use the negative reciprocal gradient and substitute the midpoint to find c.','Gunakan kecerunan salingan negatif dan gantikan titik tengah untuk mencari c.')], context=locals())
         # Triangle A=(0,0), B=(2a,0), C=(b,2k).
         intercept=F(b*b+4*k*k-2*a*b,4*k)
         radius=math.sqrt(a*a+float(intercept)**2)
@@ -214,7 +216,7 @@ def advanced(topic, level, variant, rng):
                   ('Use a radius and the base-height area formula.','Gunakan jejari dan rumus luas tapak-tinggi.',rf'r=\sqrt{{{a*a}+({num(intercept)})^2}},\quad A_\triangle={2*a*k}')],
                  [('The centre is equidistant from all three points.','Pusat mempunyai jarak sama dari ketiga-tiga titik.'),
                   ('AB is horizontal, so its perpendicular bisector fixes h.','AB mendatar, maka pembahagi dua sama serenjangnya menentukan h.'),
-                  ('Expand OA² = OC²; the squared h and j terms cancel.','Kembangkan OA² = OC²; sebutan kuasa dua h dan j terhapus.')],tolerance=.0005)
+                  ('Expand OA² = OC²; the squared h and j terms cancel.','Kembangkan OA² = OC²; sebutan kuasa dua h dan j terhapus.')],tolerance=.0005, context=locals())
 
     if topic == 'linear_law':
         if not boss:
@@ -227,7 +229,7 @@ def advanced(topic, level, variant, rng):
                       ('Use the data ratio for the gradient.','Gunakan nisbah data untuk kecerunan.',rf'a={coeff},\quad 2^n={2**power}\Rightarrow n={power}'),
                       ('Predict with the original model.','Ramalkan dengan model asal.',rf'y(4)={coeff}\cdot4^{power}={coeff*4**power}')],
                      [('Take logarithms or divide the two observations.','Ambil logaritma atau bahagikan dua cerapan.'),
-                      ('At x = 1 the value of y equals a; the ratio determines n.','Pada x = 1 nilai y sama dengan a; nisbah menentukan n.')])
+                      ('At x = 1 the value of y equals a; the ratio determines n.','Pada x = 1 nilai y sama dengan a; nisbah menentukan n.')], context=locals())
         return q('A straight-line plot uses X = x² and Y = xy for the model y = ax + b/x. From the two given points, find a, b, and y when x = 3. Then find the positive x where y is minimum.',
                  'Plot garis lurus menggunakan X = x² dan Y = xy bagi model y = ax + b/x. Daripada dua titik diberi, cari a, b dan y apabila x = 3. Kemudian cari x positif apabila y minimum.',
                  rf'(X,Y)=(1,{a+a*k*k}),(4,{4*a+a*k*k}),\quad x>0',
@@ -237,7 +239,7 @@ def advanced(topic, level, variant, rng):
                   ('Use AM-GM, or complete a square after comparing to the minimum.','Gunakan AM-GM, atau lengkapkan kuasa dua selepas membandingkan dengan minimum.',rf'y-2\sqrt{{ab}}=\dfrac{{(\sqrt a\,x-\sqrt b)^2}}{{x}}\geq0,\quad x=\sqrt{{b/a}}={k}')],
                  [('Recover the original parameters from gradient and intercept.','Dapatkan parameter asal daripada kecerunan dan pintasan.'),
                   ('The minimum of ax + b/x for x > 0 occurs when the two terms are equal.','Minimum ax + b/x bagi x > 0 berlaku apabila kedua-dua sebutan sama.'),
-                  ('Solve ax = b/x, or show the non-negative square divided by x.','Selesaikan ax = b/x, atau tunjukkan kuasa dua tidak negatif dibahagi x.')])
+                  ('Solve ax = b/x, or show the non-negative square divided by x.','Selesaikan ax = b/x, atau tunjukkan kuasa dua tidak negatif dibahagi x.')], context=locals())
 
     if topic == 'circles':
         if not boss:
@@ -248,7 +250,7 @@ def advanced(topic, level, variant, rng):
                      [('Substitute the line into the circle.','Gantikan garis ke dalam bulatan.',rf'(x-{b})^2={rad*rad}'),
                       ('Take both square roots.','Ambil kedua-dua punca kuasa dua.',rf'x={b}\pm{rad}')],
                      [('Substitute y before solving for x.','Gantikan y sebelum menyelesaikan x.'),
-                      ('A squared expression gives two signs for its square root.','Ungkapan kuasa dua memberikan dua tanda bagi punca kuasa duanya.')])
+                      ('A squared expression gives two signs for its square root.','Ungkapan kuasa dua memberikan dua tanda bagi punca kuasa duanya.')], context=locals())
         # 3-4-5 radius triangle to a point and external tangent lengths.
         rad=5*a; px=b+3*a; py=k+4*a
         c=F(py,1)+F(3*px,4)
@@ -261,7 +263,7 @@ def advanced(topic, level, variant, rng):
                   ('Use the right triangle from the centre to the contact point.','Gunakan segi tiga bersudut tegak dari pusat ke titik sentuhan.',rf'PT=\sqrt{{({rad+k})^2-{rad}^2}}')],
                  [('Use the radius gradient to find the perpendicular tangent gradient.','Gunakan kecerunan jejari untuk mencari kecerunan tangen berserenjang.'),
                   ('For the tangent length, radius and tangent meet at 90°.','Bagi panjang tangen, jejari dan tangen bertemu pada 90°.'),
-                  ('The centre-to-P distance is the hypotenuse, not a tangent length.','Jarak pusat-ke-P ialah hipotenus, bukan panjang tangen.')],tolerance=.0005)
+                  ('The centre-to-P distance is the hypotenuse, not a tangent length.','Jarak pusat-ke-P ialah hipotenus, bukan panjang tangen.')],tolerance=.0005, context=locals())
 
     if topic == 'circular':
         if not boss:
@@ -273,7 +275,7 @@ def advanced(topic, level, variant, rng):
                      [('Rearrange the sector area formula.','Susun semula rumus luas sektor.',rf'\theta=2A/r^2={num(theta)}'),
                       ('Find arc length, then add two radii.','Cari panjang lengkok, kemudian tambah dua jejari.',rf's=r\theta={num(a*theta)},\quad P=s+2r={num(a*theta+2*a)}')],
                      [('Start with A = ½r²θ, not s = rθ.','Mulakan dengan A = ½r²θ, bukan s = rθ.'),
-                      ('A sector perimeter includes two radii as well as the arc.','Perimeter sektor merangkumi dua jejari serta lengkok.')])
+                      ('A sector perimeter includes two radii as well as the arc.','Perimeter sektor merangkumi dua jejari serta lengkok.')], context=locals())
         theta=F(b,4); inner=a; outer=a+k
         area=F(outer*outer-inner*inner,2)*theta
         perimeter=(outer+inner)*theta+2*k
@@ -285,7 +287,7 @@ def advanced(topic, level, variant, rng):
                   ('Add both arcs and both radial gaps.','Tambah kedua-dua lengkok dan dua jurang jejari.',rf'P=(R+r)\theta+2(R-r)={num(perimeter)}')],
                  [('Model the shaded region as the difference of two sectors.','Modelkan rantau berlorek sebagai beza dua sektor.'),
                   ('The radial boundary lengths are R − r, not R.','Panjang sempadan jejari ialah R − r, bukan R.'),
-                  ('The two curved boundaries have lengths Rθ and rθ.','Dua sempadan melengkung mempunyai panjang Rθ dan rθ.')])
+                  ('The two curved boundaries have lengths Rθ and rθ.','Dua sempadan melengkung mempunyai panjang Rθ dan rθ.')], context=locals())
 
     if topic == 'trig':
         # A trig quadratic requiring an identity, compound input and full interval.
@@ -298,7 +300,7 @@ def advanced(topic, level, variant, rng):
                      [('Set u = nθ − shift and factorise.','Ambil u = nθ − anjakan dan faktorkan.',r'(2\sin u-1)(\sin u-1)=0'),
                       ('Find all angles in the interval.','Cari semua sudut dalam selang.',rf'u=30^\circ,90^\circ,150^\circ,\quad\theta=(u+{shift}^\circ)/{n}')],
                      [('Use the compound angle as one variable, then factorise in its sine.','Gunakan sudut gabungan sebagai satu pemboleh ubah, kemudian faktorkan dalam sinusnya.'),
-                      ('For each sine value, list every angle in the interval.','Bagi setiap nilai sinus, senaraikan setiap sudut dalam selang.')])
+                      ('For each sine value, list every angle in the interval.','Bagi setiap nilai sinus, senaraikan setiap sudut dalam selang.')], context=locals())
         # 2cos²u−3cosu+1=0 gives u=0,60,300,360 across full cycle.
         vals=[F(shift,n),F(60+shift,n),F(300+shift,n),F(360+shift,n)]
         return q('Use a trigonometric identity to solve for all θ in the degree interval, in ascending order. Include both interval endpoints when they satisfy the equation.',
@@ -310,7 +312,7 @@ def advanced(topic, level, variant, rng):
                   ('Transform every solution back to θ.','Tukarkan setiap penyelesaian semula kepada θ.',rf'\theta=(u+{shift}^\circ)/{n}')],
                  [('Set u = nθ − shift and transform the interval too.','Ambil u = nθ − anjakan dan tukarkan selang juga.'),
                   ('Replace cos 2u by 2cos²u − 1, then factorise.','Gantikan kos 2u dengan 2kos²u − 1, kemudian faktorkan.'),
-                  ('cos u = 1 occurs at both 0° and 360° here; convert all u values back.','kos u = 1 berlaku pada 0° dan 360° di sini; tukarkan semua nilai u semula.')])
+                  ('cos u = 1 occurs at both 0° and 360° here; convert all u values back.','kos u = 1 berlaku pada 0° dan 360° di sini; tukarkan semua nilai u semula.')], context=locals())
 
     if topic == 'triangles':
         if not boss:
@@ -322,7 +324,7 @@ def advanced(topic, level, variant, rng):
                      [('Use the cosine rule.','Gunakan petua kosinus.',rf'BC^2={a}^2+{a+k}^2-2({a})({a+k})\cos60^\circ'),
                       ('Use the included-angle area formula.','Gunakan rumus luas sudut kandung.',rf'A=\dfrac12({a})({a+k})\sin60^\circ')],
                      [('The given angle is between the sides, so use cosine rule.','Sudut diberi di antara sisi, maka gunakan petua kosinus.'),
-                      ('Area can be found directly without computing another angle.','Luas boleh dicari terus tanpa menghitung sudut lain.')],tolerance=.0005)
+                      ('Area can be found directly without computing another angle.','Luas boleh dicari terus tanpa menghitung sudut lain.')],tolerance=.0005, context=locals())
         # Ambiguous sine rule with sin B = 3/4, A=30°. Two valid triangles.
         a=rng.randint(2,20)
         sine=F(rng.randint(11,18),20)
@@ -340,7 +342,7 @@ def advanced(topic, level, variant, rng):
                   ('Use the angle between sides a and b.','Gunakan sudut di antara sisi a dan b.',r'\text{Area}=\dfrac12ab\sin C')],
                  [('This is the ambiguous sine-rule case.','Ini ialah kes berambiguiti petua sinus.'),
                   ('Both B and 180° − B can share the same sine; test their remaining angles.','B dan 180° − B boleh mempunyai sinus sama; uji sudut bakinya.'),
-                  ('The included angle for area ½ab sin C is C, not A or B.','Sudut kandung bagi luas ½ab sin C ialah C, bukan A atau B.')],tolerance=.0005)
+                  ('The included angle for area ½ab sin C is C, not A or B.','Sudut kandung bagi luas ½ab sin C ialah C, bukan A atau B.')],tolerance=.0005, context=locals())
 
     if topic == 'combinatorics':
         n=rng.randint(5,12); r=rng.randint(2,4)
@@ -351,7 +353,7 @@ def advanced(topic, level, variant, rng):
                      [('Treat the named group as one block.','Anggap kumpulan tertentu sebagai satu blok.',rf'(n-r+1)!={math.factorial(n-r+1)}'),
                       ('Allow every internal order.','Benarkan setiap turutan dalaman.',rf'N={r}!({n-r+1})!={math.factorial(r)*math.factorial(n-r+1)}')],
                      [('Count n − r + 1 objects by treating the group as a block.','Hitung n − r + 1 objek dengan menganggap kumpulan sebagai blok.'),
-                      ('The named people can be permuted inside the block.','Orang tertentu boleh disusun dalam blok.')])
+                      ('The named people can be permuted inside the block.','Orang tertentu boleh disusun dalam blok.')], context=locals())
         boys=a; girls=k; size=min(4,boys+girls-1)
         committees=sum(math.comb(girls,j)*math.comb(boys,size-j) for j in range(2,min(girls,size)+1) if size-j<=boys)
         return q(f'A club has {boys} boys and {girls} girls, all distinct. A {size}-person committee needs at least two girls. Find the number of committees, then the number of ways to choose such a committee and appoint a chair and secretary from it.',
@@ -362,7 +364,7 @@ def advanced(topic, level, variant, rng):
                   ('Assign the two distinct roles within each committee.','Agihkan dua jawatan berbeza dalam setiap jawatankuasa.',rf'{committees}\times{size}\times{size-1}={committees*size*(size-1)}')],
                  [('At least two means sum the cases for two, three, and possibly four girls.','Sekurang-kurangnya dua bermaksud tambah kes dua, tiga dan mungkin empat perempuan.'),
                   ('Use combinations for membership; the chair and secretary roles are ordered.','Gunakan gabungan untuk keahlian; jawatan pengerusi dan setiausaha mempunyai turutan.'),
-                  ('Multiply the committee count by r(r − 1), not by the total club membership.','Darab bilangan jawatankuasa dengan r(r − 1), bukan jumlah ahli kelab.')])
+                  ('Multiply the committee count by r(r − 1), not by the total club membership.','Darab bilangan jawatankuasa dengan r(r − 1), bukan jumlah ahli kelab.')], context=locals())
 
     if topic == 'series':
         if not boss:
@@ -374,7 +376,7 @@ def advanced(topic, level, variant, rng):
                      [('Subtract the term equations.','Tolak persamaan sebutan.',rf'4d={4*b}\Rightarrow d={b}'),
                       ('Find a, then use the sum formula.','Cari a, kemudian gunakan rumus hasil tambah.',rf'a={a},\quad S_{{{n}}}=\dfrac{{{n}}}2[2({a})+({n-1})({b})]')],
                      [('Write T₃ = a + 2d and T₇ = a + 6d.','Tulis T₃ = a + 2d dan T₇ = a + 6d.'),
-                      ('Find d first; do not confuse term values with their positions.','Cari d dahulu; jangan keliru nilai sebutan dengan kedudukannya.')])
+                      ('Find d first; do not confuse term values with their positions.','Cari d dahulu; jangan keliru nilai sebutan dengan kedudukannya.')], context=locals())
         first=a; ratio=F(1,k); inf=F(first,1)/(1-ratio); gap=inf*ratio**t
         return q('A positive geometric progression has sum to infinity S. The sum of its first two terms is U. Find the first term and common ratio (0 < r < 1). Then find the least n for which the remaining sum is strictly less than ε.',
                  'Janjang geometri positif mempunyai hasil tambah ketakterhinggaan S. Hasil tambah dua sebutan pertama ialah U. Cari sebutan pertama dan nisbah sepunya (0 < r < 1). Kemudian cari n terkecil apabila baki hasil tambah kurang secara ketat daripada ε.',
@@ -385,7 +387,7 @@ def advanced(topic, level, variant, rng):
                   ('Apply the strict inequality.','Gunakan ketaksamaan ketat.',rf'r^n<r^{{{t}}},\ 0<r<1\Rightarrow n>{t}\Rightarrow n_{{\min}}={t+1}')],
                  [('Use S₂/S∞ = 1 − r² to determine r.','Gunakan S₂/S∞ = 1 − r² untuk menentukan r.'),
                   ('The remaining sum after n terms equals S∞rⁿ.','Baki hasil tambah selepas n sebutan sama dengan S∞rⁿ.'),
-                  ('Equality at the threshold is not enough: the problem requires strictly less.','Kesamaan pada ambang tidak mencukupi: masalah memerlukan kurang secara ketat.')])
+                  ('Equality at the threshold is not enough: the problem requires strictly less.','Kesamaan pada ambang tidak mencukupi: masalah memerlukan kurang secara ketat.')], context=locals())
 
     if topic == 'vectors':
         if not boss:
@@ -397,7 +399,7 @@ def advanced(topic, level, variant, rng):
                      [('Move one third of AB from A.','Bergerak satu pertiga AB dari A.',rf'\overrightarrow{{AM}}=\dfrac13\overrightarrow{{AB}}=({a},{t})'),
                       ('Add to A and calculate the magnitude.','Tambah kepada A dan hitung magnitud.',rf'M=({b+a},{k+t}),\quad |AM|=\sqrt{{{a*a+t*t}}}')],
                      [('The ratio 1:2 corresponds to one third, not one half, of AB.','Nisbah 1:2 bersamaan satu pertiga, bukan separuh, AB.'),
-                      ('The magnitude uses displacement components, not the coordinates of M.','Magnitud menggunakan komponen sesaran, bukan koordinat M.')],tolerance=.0005)
+                      ('The magnitude uses displacement components, not the coordinates of M.','Magnitud menggunakan komponen sesaran, bukan koordinat M.')],tolerance=.0005, context=locals())
         # OA=u, OB=v; P on AB with AP:PB=1:2 and Q on OP meeting B-line parallel OA.
         ux=a; uy=b; vx=-k; vy=t
         # Q = lambda P = v + mu u -> lambda/3=1 hence lambda3, mu2.
@@ -411,7 +413,7 @@ def advanced(topic, level, variant, rng):
                   ('Evaluate the vectors.','Nilai vektor.',rf'\overrightarrow{{OQ}}=2\mathbf u+\mathbf v=({2*ux+vx},{2*uy+vy})')],
                  [('Write OP as a combination of u and v.','Tulis OP sebagai gabungan u dan v.'),
                   ('Q lies on OP, so OQ is a scalar multiple of OP; it also equals v + μu.','Q pada OP, maka OQ ialah gandaan skalar OP; ia juga sama dengan v + μu.'),
-                  ('Compare the v coefficients first, then calculate the coordinate components.','Bandingkan pekali v dahulu, kemudian hitung komponen koordinat.')])
+                  ('Compare the v coefficients first, then calculate the coordinate components.','Bandingkan pekali v dahulu, kemudian hitung komponen koordinat.')], context=locals())
 
     if topic in ('calculus','differentiation','integration','kinematics'):
         sub=topic if topic!='calculus' else ['differentiation','integration','kinematics'][variant%3]
@@ -424,7 +426,7 @@ def advanced(topic, level, variant, rng):
                          [('Differentiate and evaluate at the point.','Bezakan dan nilai pada titik.',rf'y\prime={2*a}x\Rightarrow m={grad},\quad y({t})={value}'),
                           ('Use point-gradient form.','Gunakan bentuk titik-kecerunan.',rf'y-{value}={grad}(x-{t})\Rightarrow c={intercept}')],
                          [('A tangent needs both the gradient and the point on the curve.','Tangen memerlukan kecerunan dan titik pada lengkung.'),
-                          ('Substitute the point into y = mx + c after differentiating.','Gantikan titik ke dalam y = mx + c selepas membezakan.')])
+                          ('Substitute the point into y = mx + c after differentiating.','Gantikan titik ke dalam y = mx + c selepas membezakan.')], context=locals())
             # Cubic with stationary points b and b+k, derivative3a(x-b)(x-b-k).
             u=b; v=b+k; coeff=F(3*a*(u+v),2); lin=3*a*u*v
             val=lambda z: F(a*z**3)-coeff*z*z+lin*z+t
@@ -437,7 +439,7 @@ def advanced(topic, level, variant, rng):
                       ('Evaluate the original curve, not its derivative.','Nilai lengkung asal, bukan terbitannya.',rf'y({u})={num(val(u))},\quad y({v})={num(val(v))}')],
                      [('Solve dy/dx = 0 before classifying the stationary points.','Selesaikan dy/dx = 0 sebelum mengelaskan titik pegun.'),
                       ('A negative second derivative means a local maximum; positive means minimum.','Terbitan kedua negatif bermaksud maksimum tempatan; positif bermaksud minimum.'),
-                      ('Substitute the two x values into y to obtain the requested extreme values.','Gantikan dua nilai x ke dalam y untuk mendapatkan nilai ekstrem diminta.')])
+                      ('Substitute the two x values into y to obtain the requested extreme values.','Gantikan dua nilai x ke dalam y untuk mendapatkan nilai ekstrem diminta.')], context=locals())
         if sub=='integration':
             if not boss:
                 value=a*t*t+k
@@ -448,7 +450,7 @@ def advanced(topic, level, variant, rng):
                          [('Integrate term by term.','Kamirkan sebutan demi sebutan.',rf'y={a}x^2+{b}x+C'),
                           ('Use the known point before evaluating.','Gunakan titik diketahui sebelum menilai.',rf'C={k},\quad y({t})={a*t*t+b*t+k}')],
                          [('The integration constant is determined by the point, not assumed zero.','Pemalar pengamiran ditentukan oleh titik, bukan diandaikan sifar.'),
-                          ('Substitute x = 1 and the given y value into the antiderivative.','Gantikan x = 1 dan nilai y diberi ke dalam antiterbitan.')])
+                          ('Substitute x = 1 and the given y value into the antiderivative.','Gantikan x = 1 dan nilai y diberi ke dalam antiterbitan.')], context=locals())
             upper=b+k
             signed=F(upper**3,3)-F((b+upper)*upper*upper,2)+b*upper*upper
             f=lambda z:F(z**3,3)-F((b+upper)*z*z,2)+b*upper*z
@@ -462,7 +464,7 @@ def advanced(topic, level, variant, rng):
                       ('Split at the internal root and reverse the negative part.','Pisahkan pada punca dalaman dan songsangkan bahagian negatif.',rf'A=[F({b})-F(0)]-[F({upper})-F({b})]={num(area)}')],
                      [('Area and signed integral differ when the curve changes sign.','Luas dan kamiran bertanda berbeza apabila lengkung berubah tanda.'),
                       ('Find both roots; split the integral at the root inside the interval.','Cari kedua-dua punca; pisahkan kamiran pada punca di dalam selang.'),
-                      ('The curve is positive before the first root and negative between the roots.','Lengkung positif sebelum punca pertama dan negatif di antara punca.')])
+                      ('The curve is positive before the first root and negative between the roots.','Lengkung positif sebelum punca pertama dan negatif di antara punca.')], context=locals())
         if not boss:
             return q(f'A particle has the stated acceleration and initial velocity. Find v({t}), then displacement between t=0 and t={t}.',
                      f'Zarah mempunyai pecutan diberi dan halaju awal. Cari v({t}), kemudian sesaran antara t=0 dan t={t}.',
@@ -471,7 +473,7 @@ def advanced(topic, level, variant, rng):
                      [('Integrate acceleration and apply the initial condition.','Kamirkan pecutan dan gunakan syarat awal.',rf'v(t)={a}t^2+{b}'),
                       ('Integrate velocity for displacement.','Kamirkan halaju untuk sesaran.',rf'\Delta s=\dfrac{{{a}({t})^3}}3+{b}({t})')],
                      [('Two integrations are needed: acceleration to velocity, then velocity to displacement.','Dua pengamiran diperlukan: pecutan kepada halaju, kemudian halaju kepada sesaran.'),
-                      ('The first integration constant is the initial velocity.','Pemalar pengamiran pertama ialah halaju awal.')])
+                      ('The first integration constant is the initial velocity.','Pemalar pengamiran pertama ialah halaju awal.')], context=locals())
         u=b; end=b+k
         signed=F(a*end*end,2)-a*u*end
         total=F(a*u*u,2)+F(a*k*k,2)
@@ -484,7 +486,7 @@ def advanced(topic, level, variant, rng):
                   ('Add the magnitudes before and after reversal.','Tambah magnitud sebelum dan selepas perubahan arah.',rf'D=\dfrac{{{a}({u})^2}}2+\dfrac{{{a}({k})^2}}2={num(total)}')],
                  [('Direction changes where velocity is zero and changes sign.','Arah berubah apabila halaju sifar dan berubah tanda.'),
                   ('Displacement is the signed integral of v; distance is the integral of |v|.','Sesaran ialah kamiran bertanda v; jarak ialah kamiran |v|.'),
-                  ('Split the distance calculation at the direction-change time.','Pisahkan pengiraan jarak pada masa perubahan arah.')])
+                  ('Split the distance calculation at the direction-change time.','Pisahkan pengiraan jarak pada masa perubahan arah.')], context=locals())
 
     if topic=='index_numbers':
         i1=100+10*a; i2=100+10*b; w=k
@@ -498,7 +500,7 @@ def advanced(topic, level, variant, rng):
                      [('Compute the weighted mean.','Hitung min berwajaran.',rf'I=\dfrac{{{w}({i1})+2({i2})}}{{{w+2}}}={num(composite)}'),
                       ('Apply the index to the base cost.','Gunakan indeks pada kos asas.',rf'C_1={cost}\cdot I/100={num(F(cost,100)*composite)}')],
                      [('Use weights in both numerator and denominator.','Gunakan wajaran dalam pembilang dan penyebut.'),
-                      ('An index of I multiplies the base cost by I/100.','Indeks I mendarab kos asas dengan I/100.')])
+                      ('An index of I multiplies the base cost by I/100.','Indeks I mendarab kos asas dengan I/100.')], context=locals())
         missing=110+10*t; comp=F(w*i1+2*missing,w+2); next_index=100+10*b
         cost=10*a
         return q('The composite index for year B relative to year A is given, with one component missing. Find that component. A basket then has index J for year C relative to B. Find its C-to-A composite index and C cost if it cost C₀ in A.',
@@ -511,7 +513,7 @@ def advanced(topic, level, variant, rng):
                   ('Use the chained index on the original cost.','Gunakan indeks berantai pada kos asal.',rf'C_C={num(F(cost,100)*comp*F(next_index,100))}')],
                  [('Solve the weighted mean equation for the missing index first.','Selesaikan persamaan min berwajaran untuk indeks hilang dahulu.'),
                   ('Indices with different base years cannot simply be added.','Indeks dengan tahun asas berlainan tidak boleh ditambah terus.'),
-                  ('C/A = (C/B)(B/A)/100; use the resulting index with the A-year cost.','C/A = (C/B)(B/A)/100; gunakan indeks terhasil dengan kos tahun A.')])
+                  ('C/A = (C/B)(B/A)/100; use the resulting index with the A-year cost.','C/A = (C/B)(B/A)/100; gunakan indeks terhasil dengan kos tahun A.')], context=locals())
 
     if topic=='probability':
         n=a+2; p=F(1,k)
@@ -524,7 +526,7 @@ def advanced(topic, level, variant, rng):
                      [('Use the complement for the tail.','Gunakan pelengkap bagi hujung taburan.',rf'P(X\geq2)=1-(1-p)^{{{n}}}-{n}p(1-p)^{{{n-1}}}'),
                       ('Use binomial moments.','Gunakan momen binomial.',r'\mu=np,\quad\sigma^2=np(1-p)')],
                      [('It is shorter to subtract P(0) and P(1) from 1.','Lebih ringkas menolak P(0) dan P(1) daripada 1.'),
-                      ('The mean is np; multiply it by 1 − p for the variance.','Min ialah np; darabkannya dengan 1 − p untuk varians.')])
+                      ('The mean is np; multiply it by 1 − p for the variance.','Min ialah np; darabkannya dengan 1 − p untuk varians.')], context=locals())
         # Infer binomial parameters from moments, then compute an acceptance tail.
         mean=n*p; variance=n*p*(1-p); cutoff=2
         accept=sum(F(math.comb(n,j))*p**j*(1-p)**(n-j) for j in range(cutoff+1))
@@ -537,7 +539,7 @@ def advanced(topic, level, variant, rng):
                   ('Multiply the probability by the number of batches.','Darab kebarangkalian dengan bilangan kelompok.',rf'E=100P(X\leq2)={num(100*accept)}')],
                  [('Use mean = np and variance = np(1 − p) simultaneously.','Gunakan min = np dan varians = np(1 − p) secara serentak.'),
                   ('At most two includes zero, one and two defects.','Paling banyak dua merangkumi sifar, satu dan dua kecacatan.'),
-                  ('The expected count need not be an integer; keep exact fractions where possible.','Bilangan jangkaan tidak semestinya integer; kekalkan pecahan tepat jika boleh.')])
+                  ('The expected count need not be an integer; keep exact fractions where possible.','Bilangan jangkaan tidak semestinya integer; kekalkan pecahan tepat jika boleh.')], context=locals())
 
     if topic=='linear_programming':
         # Two resource constraints cross at (a,b), non-negative feasible polygon.
@@ -553,7 +555,7 @@ def advanced(topic, level, variant, rng):
                       ('Compare the objective at all feasible corners.','Bandingkan objektif pada semua bucu tersaur.',r'P\in\{'+','.join(num(v) for v in vals)+r'\}'),
                       ('Select the largest value.','Pilih nilai terbesar.',rf'P_{{\max}}={num(max(vals))}')],
                      [('The intersection of constraints is a candidate, not automatically the optimum.','Persilangan kekangan ialah calon, bukan optimum secara automatik.'),
-                      ('Find the feasible intercepts on both axes and compare with the intersection.','Cari pintasan tersaur pada kedua-dua paksi dan bandingkan dengan persilangan.')])
+                      ('Find the feasible intercepts on both axes and compare with the intersection.','Cari pintasan tersaur pada kedua-dua paksi dan bandingkan dengan persilangan.')], context=locals())
         # Profit 3x+2y is strictly inside the normal cone, maximum at integer (a,b).
         profit=3*a+2*b; target=profit-k
         feasible=[(xx,yy) for xx in range(c1//2+1) for yy in range(c2//2+1) if 2*xx+yy<=c1 and xx+2*yy<=c2]
@@ -567,5 +569,5 @@ def advanced(topic, level, variant, rng):
                   ('Apply the profit target to each integer plan.','Gunakan sasaran keuntungan pada setiap rancangan integer.',rf'3x+2y\geq{target}\Rightarrow N={count}')],
                  [('First solve the continuous corner problem, then check that the optimum is an integer plan.','Selesaikan masalah bucu selanjar dahulu, kemudian semak optimum ialah rancangan integer.'),
                   ('For the count, include boundary points and restrict x and y to non-negative integers.','Untuk bilangan, masukkan titik sempadan dan hadkan x dan y kepada integer tidak negatif.'),
-                  ('For each feasible x, list integer y values satisfying both resources and the profit target.','Bagi setiap x tersaur, senaraikan y integer yang memenuhi kedua-dua sumber dan sasaran keuntungan.')])
+                  ('For each feasible x, list integer y values satisfying both resources and the profit target.','Bagi setiap x tersaur, senaraikan y integer yang memenuhi kedua-dua sumber dan sasaran keuntungan.')], context=locals())
     raise ValueError('No progression template for '+topic)

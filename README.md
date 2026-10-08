@@ -18,8 +18,8 @@ Keep your Penguin MathQuest repository. This project uses a separate repository.
 1. Download and extract `EXCELerate_AddMath_Arena.zip`.
 2. In GitHub, create a new repository named `excelerate-addmath-arena`.
 3. Click **Add file → Upload files**. Upload the contents INSIDE the extracted `addmath_arena` folder. Do not upload the ZIP itself.
-4. At the repository's top level, confirm these files exist: `app.py`, `bank.py`, `progression.py`, `checker.py`, `curriculum.py`, `storage.py`, and `requirements.txt`. Include `README.md`, `verify_project.py`, `requirements-dev.txt` and the `tests` folder too.
-5. Upload `.streamlit/config.toml` as well. Windows may hide this folder; GitHub → Add file → Create new file also lets you create a file with that exact path and paste the supplied contents. The in-app styles still work if this theme file is missed.
+4. At the repository's top level, confirm these files exist: `app.py`, `bank.py`, `progression.py`, `diagrams.py`, `checker.py`, `curriculum.py`, `storage.py`, `music.py`, `music_player.js`, and `requirements.txt`. Include `README.md`, `verify_project.py`, `requirements-dev.txt` and the `tests` folder too.
+5. Upload `.streamlit/config.toml` as well. Windows may hide this folder; GitHub → Add file → Create new file also lets you create a file with that exact path and paste the supplied contents. This file also enables static audio serving, so it is required for music. Upload the supplied static/study_music.mp3 file too.
 6. Commit directly to `main`.
 7. At https://share.streamlit.io choose **Create app**. Select the NEW repository, `main`, and `app.py` as the main file. Deploy.
 8. For teacher access, open the app's Settings → Secrets and add the top-level line below, substituting a private password:
@@ -31,7 +31,7 @@ teacher_password = "REPLACE_WITH_YOUR_PRIVATE_PASSWORD"
 9. Save secrets. If necessary, use the app menu → Reboot. Open **Teacher dashboard** from the sidebar and log in.
 10. Run a five-question test in each course before sharing the app with students.
 
-No previous Penguin app modules, image assets, paid API keys or AI subscriptions are needed. All artwork is created in CSS, and all questions are generated locally from original templates.
+No previous Penguin app modules, image assets, paid API keys or AI subscriptions are needed. Brand artwork is created in CSS, mathematical diagrams are drawn locally with Matplotlib, and all questions are generated locally from original templates.
 
 ## Panduan ringkas Bahasa Melayu
 
@@ -46,8 +46,9 @@ Ekstrak ZIP dan muat naik semua fail dalam folder `addmath_arena` ke repositori 
 - Worked solution steps in both languages, properly typeset fractions, roots, logarithms and integrals.
 - Arithmetic input such as `1/2`, `sqrt(3)` and `2*pi/3`. Input is parsed using a restricted, bounded AST; it is not executed as Python code.
 - Practice XP, streaks, staged bilingual hints, per-level results, end-of-session review, recommended topics and a queue to retry missed questions.
+- Generated diagrams embedded in relevant questions and solution reviews: triangles, sectors, annular sectors, circles, coordinate geometry, vectors, functions, trigonometric curves, integration areas, motion and linear-programming regions. Unknown quantities are symbolic; the fencing pen and unit-circle reference are explicitly labelled as schematics.
 - Interactive quadratic, sine, exponential and logarithmic graph exploration with labelled axes and reference curves.
-- Dark lime/violet study-game styling, CSS chrome orb, sticker accents and a calmer Focus mode. No flashing animation or external web fonts.
+- Dark lime/violet study-game styling, CSS chrome orb, sticker accents and study music controls. No flashing animation or external web fonts.
 - Private teacher login, opt-in completed-session storage and CSV export. No public nickname leaderboard.
 
 ## Scope and assessment limits
@@ -87,3 +88,15 @@ Browser rendering and mobile polish should also be checked after deployment. Str
 - Streamlit deployment and secrets: https://docs.streamlit.io/deploy/streamlit-community-cloud
 
 This app is independently created by EXCELerate Learning Space. It is not endorsed by Cambridge International, KPM or Canva.
+
+## Updating an earlier AddMath Arena version
+
+Upload the updated project files together, including **diagrams.py**, **progression.py** and **requirements.txt**, then reboot the Streamlit app. The requirements file now includes Matplotlib for locally generated diagrams. Do not replace only app.py, because it imports the new diagram module. No image upload folder or external picture links are needed.
+
+## Study music
+
+Focus mode has been removed. The sidebar player starts at 5% volume, requests autoplay, and loops `static/study_music.mp3`. The supplied track is the previously prepared study-music file. The player keeps one audio engine per browser tab, so answering questions and moving to the next question do not reset playback. Students can pause or change the volume; those choices persist through question updates. Music pauses in Teacher view and resumes on returning to practice unless the student paused it. A full browser reload starts a fresh player.
+
+Browsers may block autoplay with sound. The player then displays a Play prompt; clicking Play or an app control can allow playback. Some mobile browsers control volume at device level. Autoplay cannot be guaranteed without user interaction.
+
+To deploy this update, upload **app.py**, **music.py**, **music_player.js**, **requirements.txt**, **.streamlit/config.toml**, and **static/study_music.mp3** together with the other existing project files. Reboot afterward so Streamlit loads the static-serving configuration. Streamlit 1.65 or later is required by this build. To replace the song later, replace `static/study_music.mp3`, commit and reboot; reload the browser tab to load the new track.

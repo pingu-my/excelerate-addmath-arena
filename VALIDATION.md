@@ -1,7 +1,13 @@
 # Validation
 
-172 automated tests passed. Tests include generation across all 24 categories and three levels, restricted numeric parsing, independently worked examples for every upper-level category and Cambridge calculus branch, progression ordering for both courses and all session lengths, staged hints and XP, per-level exports, complete bilingual sessions, retries, consent-based storage and teacher authentication.
+231 automated tests passed: 172 mathematics/progression/app checks, 56 diagram checks and 3 music checks. Diagram tests render every visual template across all three levels, verify PNG output and serialisable finite data, check both ambiguous triangle configurations against the given sides and angle, validate annular-sector and feasible-region geometry, and exercise images in the question and completed review.
+
+Existing checks include original question generation, independent upper-level examples, numeric input safety, bilingual sessions, staged hints and scoring, retries, consent-based persistence and teacher login.
 
 `python verify_project.py` passed required-source parsing and mixed-session generation for both curricula at every level and in progression mode.
 
-Streamlit AppTest exercised the application flows. Browser screenshot verification was unavailable in the build environment; check layout on classroom devices before sharing. This is an original basic-to-exam-style practice ladder across the topic menus, not exhaustive syllabus coverage or official exam marking.
+Generated diagram samples were visually inspected and the ambiguous-triangle layout was improved. Streamlit AppTest exercised the application flows. Full browser screenshot verification was unavailable in the build environment; check layout on classroom devices before sharing.
+
+This is original basic-to-exam-style practice across the topic menus, not exhaustive syllabus coverage or official examination method marking.
+
+Music checks cover packaged audio and static-serving configuration, removal of the Focus toggle, sidebar component mounting, and a JavaScript audio mock exercising blocked autoplay, gesture start, continuous state across rerenders, loop/volume settings, user pause and navigation. A local HTTP check returned 200 with audio/mpeg for the packaged MP3. The MP3 codec and duration were validated with ffprobe. These are not a real-browser listening test; browser autoplay policies still apply.
